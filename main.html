@@ -336,6 +336,115 @@ h2 {
   margin-top: 0.5rem;
   text-align: center;
 }
+.notification-container {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 300px;
+}
+
+/* Individual Notification Styles */
+.notification {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: var(--white);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: start;
+  gap: 12px;
+  transform: translateX(-120%);
+  animation: slideIn 0.5s forwards;
+  position: relative;
+  overflow: hidden;
+}
+
+.notification.hiding {
+  animation: slideOut 0.5s forwards;
+}
+
+/* Notification Icon */
+.notification-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+/* Notification Content */
+.notification-content {
+  flex-grow: 1;
+}
+
+.notification-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 1rem;
+}
+
+.notification-message {
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+/* Close Button */
+.notification-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  color: var(--white);
+  opacity: 0.7;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.notification-close:hover {
+  opacity: 1;
+}
+
+/* Progress Bar */
+.notification-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.7);
+  width: 100%;
+  transform-origin: left;
+  animation: progress 5s linear;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-120%);
+  }
+}
+
+@keyframes progress {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
   </style>
 </head>
 <body>
@@ -451,6 +560,9 @@ h2 {
         </form>
       </div>
     </div>
+  </div>
+  <div id="notification-container" class="notification-container">
+    <!-- Notifications will be dynamically added here -->
   </div>
 
   <script>
@@ -686,6 +798,151 @@ function logout() {
     e.preventDefault();
     signupModal.style.display = 'flex';
   });
+}
+class NotificationSystem {
+  constructor() {
+    this.container = document.getElementById('notification-container');
+    this.notifications = new Set();
+    this.initializeNotifications();
+  }
+
+  initializeNotifications() {
+    // Check for logged-in user
+    const loggedInUser = localStorage.getItem('loggedInUser');
+    if (loggedInUser) {
+      const userData = JSON.parse(localStorage.getItem('userData'));
+      if (userData) {
+        this.setupDailyNotifications(userData.fullName);
+      }
+    }
+
+    // Listen for login events
+    window.addEventListener('userLoggedIn', (e) => {
+      this.setupDailyNotifications(e.detail.fullName);
+    });
+  }
+
+  setupDailyNotifications(userName) {
+    // Journal reminder notification
+    this.scheduleJournalReminder(userName);
+    
+    // Check last login and show welcome back message
+    const lastLogin = localStorage.getItem('lastLoginDate');
+    const today = new Date().toDateString();
+    
+    if (lastLogin !== today) {
+      this.showNotification({
+        title: 'Welcome Back!',
+        message: `Great to see you again, ${userName}! 😊`,
+        icon: '👋'
+      });
+      localStorage.setItem('lastLoginDate', today);
+    }
+  }
+
+  scheduleJournalReminder(userName) {
+    // Schedule daily journal reminder
+    const now = new Date();
+    const scheduledTime = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      20, // 8 PM
+      0,
+      0
+    );
+
+    if (now > scheduledTime) {
+      scheduledTime.setDate(scheduledTime.getDate() + 1);
+    }
+
+    const timeUntilReminder = scheduledTime - now;
+
+    setTimeout(() => {
+      this.showNotification({
+        title: 'Journal Reminder',
+        message: `Hey ${userName}, take a moment to reflect on your day in your journal. 📝`,
+        icon: '📔'
+      });
+      // Schedule next reminder
+      this.scheduleJournalReminder(userName);
+    }, timeUntilReminder);
+  }
+
+  showNotification({ title, message, icon = '🔔', duration = 5000 }) {
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    
+    notification.innerHTML = `
+      <div class="notification-icon">${icon}</div>
+      <div class="notification-content">
+        <div class="notification-title">${title}</div>
+        <div class="notification-message">${message}</div>
+      </div>
+      <span class="notification-close">&times;</span>
+      <div class="notification-progress"></div>
+    `;
+
+    this.container.appendChild(notification);
+    this.notifications.add(notification);
+
+    // Handle close button
+    const closeBtn = notification.querySelector('.notification-close');
+    closeBtn.addEventListener('click', () => this.removeNotification(notification));
+
+    // Auto remove after duration
+    setTimeout(() => this.removeNotification(notification), duration);
+  }
+
+  removeNotification(notification) {
+    if (!this.notifications.has(notification)) return;
+    
+    notification.classList.add('hiding');
+    setTimeout(() => {
+      this.container.removeChild(notification);
+      this.notifications.delete(notification);
+    }, 500);
+  }
+}
+
+// Initialize notification system
+const notificationSystem = new NotificationSystem();
+
+// Dispatch login event when user logs in (add this to your login success handler)
+document.getElementById('userLoginForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+  const loginEmail = document.getElementById('loginEmail').value;
+  const userData = JSON.parse(localStorage.getItem('userData'));
+  
+  if (userData && userData.email === loginEmail) {
+    // Dispatch login event
+    const loginEvent = new CustomEvent('userLoggedIn', {
+      detail: { fullName: userData.fullName }
+    });
+    window.dispatchEvent(loginEvent);
+    
+    // Rest of your existing login success code...
+  }
+});
+
+// Example of showing different types of notifications
+function showExampleNotifications(userName) {
+  notificationSystem.showNotification({
+    title: 'Meditation Time',
+    message: `${userName}, take a 5-minute breathing break to stay centered. 🧘‍♂️`,
+    icon: '🧘‍♂️',
+    duration: 6000
+  });
+
+  setTimeout(() => {
+    notificationSystem.showNotification({
+      title: 'Wellness Check',
+      message: "How are you feeling today? Don't forget to track your mood!",
+      icon: '🌟',
+      duration: 6000
+    });
+  }, 2000);
 }
   </script>
 </body>
