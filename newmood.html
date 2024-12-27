@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Quiz App</title>
+    <style>
+        @keyframes popUp {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes headingBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #e8f1f8; /* Lighter shade of primary blue */
+            color: #0f5da7; /* Primary blue for text */
+            background-image: url('https://em-content.zobj.net/thumbs/120/apple/354/sparkles_2728.png'),
+                              url('https://em-content.zobj.net/thumbs/120/apple/354/star_2b50.png'),
+                              url('https://em-content.zobj.net/thumbs/120/apple/354/balloon_1f388.png');
+            background-position: top left, bottom right, center;
+            background-repeat: no-repeat;
+            background-size: 100px 100px;
+        }
+        .heading {
+            font-size: 3em;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #0f5da7; /* Primary blue */
+            font-weight: bold;
+            animation: headingBounce 1.5s infinite ease-in-out;
+            text-shadow: 0 4px 6px rgba(15, 93, 167, 0.2);
+        }
+        .quiz-container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(15, 93, 167, 0.15);
+            max-width: 500px;
+            text-align: center;
+            animation: popUp 0.5s ease-in-out;
+        }
+        .question {
+            font-size: 1.7em;
+            margin-bottom: 20px;
+            color: #0f5da7; /* Primary blue */
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+        }
+        .option {
+            background: #0fa7a5; /* Teal color */
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            margin: 10px 0;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .option:hover {
+            background: #0c8482; /* Darker teal on hover */
+            transform: scale(1.05);
+        }
+        .result {
+            display: none;
+            font-size: 1.8em;
+            margin-top: 20px;
+            color: #0f5da7; /* Primary blue */
+            animation: popUp 0.5s ease-in-out;
+        }
+        .result span {
+            font-weight: bold;
+            color: #0fa7a5; /* Teal for emphasis */
+        }
+    </style>
+</head>
+<body>
+    <div class="heading">KNOW YOUR MOOD</div>
+    <div class="quiz-container">
+        <div id="quiz">
+            <div id="question" class="question"></div>
+            <div id="options" class="options"></div>
+        </div>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                text: "What do you usually do on weekends?",
+                options: [
+                    { text: "Hang out with friends 🌞", mood: "happy" },
+                    { text: "Stay in and relax 🌌", mood: "calm" },
+                    { text: "Catch up on work 😮", mood: "stressed" },
+                    { text: "Try new activities 🚀", mood: "excited" }
+                ]
+            },
+            {
+                text: "How do you feel about surprises?",
+                options: [
+                    { text: "I love them 😍", mood: "excited" },
+                    { text: "I dislike them 🙁", mood: "stressed" },
+                    { text: "Depends on the situation 🤔", mood: "calm" },
+                    { text: "They make me happy 😄", mood: "happy" }
+                ]
+            },
+            {
+                text: "What kind of music do you prefer?",
+                options: [
+                    { text: "Upbeat and energetic 🎶", mood: "happy" },
+                    { text: "Soft and soothing 🌊", mood: "calm" },
+                    { text: "None, I need silence 🎤", mood: "stressed" },
+                    { text: "Varies by mood 😎", mood: "excited" }
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        const moodScores = { happy: 0, calm: 0, stressed: 0, excited: 0 };
+
+        const questionElement = document.getElementById("question");
+        const optionsElement = document.getElementById("options");
+        const resultElement = document.getElementById("result");
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            questionElement.textContent = currentQuestion.text;
+            optionsElement.innerHTML = "";
+            currentQuestion.options.forEach(option => {
+                const button = document.createElement("button");
+                button.textContent = option.text;
+                button.className = "option";
+                button.onclick = () => selectOption(option.mood);
+                optionsElement.appendChild(button);
+            });
+        }
+
+        function selectOption(mood) {
+            moodScores[mood]++;
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            const mood = Object.keys(moodScores).reduce((a, b) => moodScores[a] > moodScores[b] ? a : b);
+            resultElement.innerHTML = `Your mood seems to be: <span>${mood.charAt(0).toUpperCase() + mood.slice(1)}</span>!`;
+            resultElement.style.display = "block";
+            questionElement.style.display = "none";
+            optionsElement.style.display = "none";
+        }
+
+        showQuestion();
+    </script>
+</body>
+</html>

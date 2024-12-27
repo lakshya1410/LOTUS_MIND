@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOTUS MIND - Mental Wellness Platform</title>
+  <style>
+    :root {
+      --primary: #0f5da7;
+      --secondary: #0fa7a5;
+      --white: #ffffff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: var(--white);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* Navbar Styles */
+    .navbar {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .navbar-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding:  rem rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: var(--white);
+    }
+
+    .logo img {
+      height: 6rem;
+      width: 6rem;
+    }
+
+    .logo span {
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .login-btn, .signup-btn {
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      transition: all 0.3s ease;
+    }
+
+    .login-btn {
+      color: var(--white);
+    }
+
+    .login-btn:hover {
+      color: var(--secondary);
+    }
+
+    .signup-btn {
+      background: var(--secondary);
+      color: var(--white);
+    }
+
+    .signup-btn:hover {
+      background: var(--primary);
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 8rem 2rem;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      font-weight: bold;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: var(--white);
+      color: var(--primary);
+      padding: 1rem 2rem;
+      border-radius: 9999px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .cta-button:hover {
+      background: var(--secondary);
+      color: var(--white);
+      transform: translateY(-2px);
+    }
+
+    /* Features Section */
+    .features {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+
+    .features-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .features-container {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .discover-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      transition: transform 0.3s ease;
+      text-decoration: none; /* Add this for link styling */
+      color: var(--white); /* Add this to maintain text color */
+      display: block; /* Add this to make entire card clickable */
+      cursor: pointer; /* Add this to show clickable cursor */
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.15); /* Add hover background effect */
+    }
+
+    .feature-icon {
+      width: 3rem;
+      height: 3rem;
+      margin-bottom: 1rem;
+      color: var(--secondary);
+    }
+
+    .icon {
+      width: 100%;
+      height: 100%;
+    }
+
+    .feature-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-card p {
+      opacity: 0.9;
+    }
+
+    /* Discover Section */
+    .discover {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .discover h2 {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .discover-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      padding: 0 1rem;
+    }
+
+    .discover-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 2rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      color: var(--white);
+      transition: background-color 0.3s ease;
+    }
+
+    .discover-card:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Animations */
+    .fade-in {
+      animation: fadeIn 0.6s ease forwards;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+}
+
+.signup-submit-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--secondary);
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.signup-submit-btn:hover {
+  background: var(--primary);
+}
+
+h2 {
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+#otpForm p {
+  color: #666;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.user-name-display {
+  color: var(--white);
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 0.375rem;
+  display: none;
+}
+
+.login-submit-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.login-submit-btn:hover {
+  background: var(--secondary);
+}
+
+/* Error Message Styles */
+.error-message {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="/" class="logo">
+        <img src="LM_logo.png" alt="Lotus Mind Logo">
+        <span>LOTUS MIND</span>
+      </a>
+      <div class="nav-buttons">
+        <a href="/login" class="login-btn">Login</a>
+        <a href="/register" class="signup-btn">Sign Up</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <h1>Welcome to Your Mental Wellness Journey</h1>
+    <p>Find peace, clarity, and support with Lotus Mind</p>
+    <a href="run_lotus_mind.bat" class="cta-button">Start Your Journey</a>
+  </header>
+
+  <section class="features">
+    <div class="features-container">
+      <a href="http://localhost:8501" class="feature-card">
+        <div class="feature-icon">
+          <svg class="icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none">
+            <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"/>
+          </svg>
+        </div>
+        <h3>AI Companion</h3>
+        <p>24/7 support with our advanced AI chatbot trained to provide emotional support</p>
+      </a>
+
+      <a href="colornote.html" class="feature-card">
+        <div class="feature-icon">
+          <svg class="icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none">
+            <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+        </div>
+        <h3>Digital Journal</h3>
+        <p>Track your thoughts and emotions with our private journaling tools</p>
+      </a>
+
+      <a href="/premium" class="feature-card">
+        <div class="feature-icon">
+          <svg class="icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </div>
+        <h3>Professional Support</h3>
+        <p>Connect with licensed therapists through our premium service</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="discover">
+    <h2>Discover Our Features</h2>
+    <div class="discover-grid">
+      <a href="newmood.html" class="discover-card">
+        <h3>Know Your Mood</h3>
+        <p>Take our quick assessment to understand your current emotional state</p>
+      </a>
+      <a href="/media" class="discover-card">
+        <h3>Wellness Media</h3>
+        <p>Access curated content including stories, blogs, and motivational quotes</p>
+      </a>
+    </div>
+  </section>
+  <div id="signupModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <div id="signupForm">
+        <h2>Create Your Account</h2>
+        <form id="userSignupForm">
+          <div class="form-group">
+            <input type="text" id="fullName" placeholder="Full Name" required>
+          </div>
+          <div class="form-group">
+            <input type="number" id="age" placeholder="Age" required min="13">
+          </div>
+          <div class="form-group">
+            <input type="email" id="email" placeholder="Email Address" required>
+          </div>
+          <button type="submit" class="signup-submit-btn">Sign Up</button>
+        </form>
+      </div>
+      <div id="otpForm" style="display: none;">
+        <h2>Verify Your Email</h2>
+        <p>Please enter the OTP sent to your email</p>
+        <form id="userOtpForm">
+          <div class="form-group">
+            <input type="text" id="otp" placeholder="Enter OTP" required maxlength="4">
+          </div>
+          <button type="submit" class="signup-submit-btn">Verify OTP</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div id="loginModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close-login">&times;</span>
+      <div id="loginForm">
+        <h2>Login</h2>
+        <form id="userLoginForm">
+          <div class="form-group">
+            <input type="email" id="loginEmail" placeholder="Email Address" required>
+          </div>
+          <button type="submit" class="login-submit-btn">Login</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+      const navbar = document.querySelector('.navbar');
+      if (window.scrollY > 50) {
+        navbar.style.background = 'rgba(255, 255, 255, 0.15)';
+      } else {
+        navbar.style.background = 'rgba(255, 255, 255, 0.1)';
+      }
+    });
+
+    // Intersection Observer for animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('fade-in');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    });
+
+    // Observe all feature cards and discover cards
+    document.querySelectorAll('.feature-card, .discover-card').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      observer.observe(el);
+    });
+    const modal = document.getElementById('signupModal');
+const closeBtn = document.querySelector('.close');
+const signupBtn = document.querySelector('.signup-btn');
+const signupForm = document.getElementById('signupForm');
+const otpForm = document.getElementById('otpForm');
+
+// Show modal when signup button is clicked
+signupBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  modal.style.display = 'flex';
+});
+
+// Close modal when X is clicked
+closeBtn.addEventListener('click', () => {
+  modal.style.display = 'none';
+  signupForm.style.display = 'block';
+  otpForm.style.display = 'none';
+});
+
+// Close modal when clicking outside
+window.addEventListener('click', (e) => {
+  if (e.target === modal) {
+    modal.style.display = 'none';
+    signupForm.style.display = 'block';
+    otpForm.style.display = 'none';
+  }
+});
+
+// Handle signup form submission
+document.getElementById('userSignupForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+  const userData = {
+    fullName: document.getElementById('fullName').value,
+    age: document.getElementById('age').value,
+    email: document.getElementById('email').value
+  };
+
+  // Store user data temporarily
+  localStorage.setItem('tempUserData', JSON.stringify(userData));
+
+  // Show OTP form
+  signupForm.style.display = 'none';
+  otpForm.style.display = 'block';
+});
+
+// Handle OTP verification
+document.getElementById('userOtpForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+  const enteredOTP = document.getElementById('otp').value;
+  const defaultOTP = '1234';
+
+  if (enteredOTP === defaultOTP) {
+    // Get stored user data
+    const userData = JSON.parse(localStorage.getItem('tempUserData'));
+    
+    // Save user data permanently
+    localStorage.setItem('userData', JSON.stringify(userData));
+    
+    // Clear temporary data
+    localStorage.removeItem('tempUserData');
+    
+    // Show success message
+    alert('Account created successfully!');
+    
+    // Close modal and reset forms
+    modal.style.display = 'none';
+    document.getElementById('userSignupForm').reset();
+    document.getElementById('userOtpForm').reset();
+    signupForm.style.display = 'block';
+    otpForm.style.display = 'none';
+  } else {
+    alert('Invalid OTP. Please try again.');
+  }
+});
+const loginModal = document.getElementById('loginModal');
+const loginBtn = document.querySelector('.login-btn');
+const closeLoginBtn = document.querySelector('.close-login');
+const navButtons = document.querySelector('.nav-buttons');
+
+// Create user name display element
+const userNameDisplay = document.createElement('div');
+userNameDisplay.classList.add('user-name-display');
+
+// Show login modal when login button is clicked
+loginBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  loginModal.style.display = 'flex';
+});
+
+// Close login modal when X is clicked
+closeLoginBtn.addEventListener('click', () => {
+  loginModal.style.display = 'none';
+  // Clear any error messages
+  const errorMessage = document.querySelector('.error-message');
+  if (errorMessage) {
+    errorMessage.remove();
+  }
+});
+
+// Close login modal when clicking outside
+window.addEventListener('click', (e) => {
+  if (e.target === loginModal) {
+    loginModal.style.display = 'none';
+    // Clear any error messages
+    const errorMessage = document.querySelector('.error-message');
+    if (errorMessage) {
+      errorMessage.remove();
+    }
+  }
+});
+
+// Check if user is already logged in
+window.addEventListener('load', () => {
+  const loggedInUser = localStorage.getItem('loggedInUser');
+  if (loggedInUser) {
+    const userData = JSON.parse(localStorage.getItem('userData'));
+    showLoggedInUser(userData.fullName);
+  }
+});
+
+// Handle login form submission
+document.getElementById('userLoginForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+  const loginEmail = document.getElementById('loginEmail').value;
+  const userData = JSON.parse(localStorage.getItem('userData'));
+  
+  // Remove any existing error message
+  const existingError = document.querySelector('.error-message');
+  if (existingError) {
+    existingError.remove();
+  }
+
+  if (!userData || userData.email !== loginEmail) {
+    // Show error message
+    const errorMessage = document.createElement('div');
+    errorMessage.classList.add('error-message');
+    errorMessage.textContent = 'Please sign up first';
+    document.getElementById('loginForm').appendChild(errorMessage);
+    return;
+  }
+
+  // Store logged in state
+  localStorage.setItem('loggedInUser', loginEmail);
+  
+  // Show user name in navbar
+  showLoggedInUser(userData.fullName);
+  
+  // Close modal and reset form
+  loginModal.style.display = 'none';
+  document.getElementById('userLoginForm').reset();
+});
+
+// Function to update navbar with user name
+function showLoggedInUser(fullName) {
+  // Hide login and signup buttons
+  loginBtn.style.display = 'none';
+  document.querySelector('.signup-btn').style.display = 'none';
+  
+  // Show user name
+  userNameDisplay.textContent = fullName;
+  userNameDisplay.style.display = 'block';
+  
+  // Add logout button
+  const logoutBtn = document.createElement('a');
+  logoutBtn.href = '#';
+  logoutBtn.classList.add('login-btn');
+  logoutBtn.textContent = 'Logout';
+  logoutBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    logout();
+  });
+  
+  // Clear existing buttons and add new elements
+  navButtons.innerHTML = '';
+  navButtons.appendChild(userNameDisplay);
+  navButtons.appendChild(logoutBtn);
+}
+
+// Function to handle logout
+function logout() {
+  // Remove logged in state
+  localStorage.removeItem('loggedInUser');
+  
+  // Restore original buttons
+  navButtons.innerHTML = `
+    <a href="/login" class="login-btn">Login</a>
+    <a href="/register" class="signup-btn">Sign Up</a>
+  `;
+  
+  // Reattach event listener to login button
+  document.querySelector('.login-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+    loginModal.style.display = 'flex';
+  });
+  
+  // Reattach event listener to signup button
+  document.querySelector('.signup-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+    signupModal.style.display = 'flex';
+  });
+}
+  </script>
+</body>
+</html>

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>JOURNAL : LOTUS MIND</title>
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900&f[]=telma@700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0f5da7;
+            --secondary-color: #0fa7a5;
+            --text-primary: #333;
+            --text-secondary: #555;
+            --background-color: #0f5da7;
+            --note-background: #88e1fd20;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .app-wrapper {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        .header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-family: 'Satoshi', sans-serif;
+            font-size: 35px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .note-input {
+            padding: 25px;
+            background-color: white;
+        }
+
+        #noteTitle,
+        #noteContent {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid var(--secondary-color);
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        #noteTitle:focus,
+        #noteContent:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 8px rgba(136, 225, 253, 0.3);
+        }
+
+        .media-upload-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        #mediaUpload {
+            display: none;
+        }
+
+        .media-upload-label {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .media-upload-label:hover {
+            background-color: #5ecbff;
+        }
+
+        .uploaded-media-preview {
+            max-width: 200px;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .input-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            background-color: #5ecbff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .previous-notes {
+            background-color: var(--note-background);
+            border-radius: 15px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .previous-note {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .previous-note:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .previous-note-title {
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .previous-note-content {
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .previous-note-date {
+            font-size: 0.8em;
+            color: #888;
+            font-weight: 500;
+        }
+
+        .previous-note-media {
+            max-width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .previous-note-delete {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #ff4d4d;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            font-size: 18px;
+        }
+
+        .previous-note:hover .previous-note-delete {
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            .previous-notes {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .previous-notes::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .previous-notes::-webkit-scrollbar-track {
+            background: var(--primary-color);
+        }
+
+        .previous-notes::-webkit-scrollbar-thumb {
+            background-color: var(--secondary-color);
+            border-radius: 4px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 20px;
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+
+        .modal-close {
+            color: #ff4d4d;
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: #ff1a1a;
+        }
+
+        .modal-body {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .modal-media {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .modal-date {
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .modal-content-full {
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+
+<body>
+    <div style="position: absolute; top: 10px; left: 10px;">
+        <img src="LM_logo.png" alt="Logo" style="width: 160px; height: auto;">
+    </div>
+
+    <div class="app-wrapper">
+        <div class="container">
+            <div class="header">
+                <h1>JOURNAL : LOTUS MIND</h1>
+            </div>
+
+            <div class="note-input">
+                <input type="text" id="noteTitle" placeholder="Note Title">
+                <textarea id="noteContent" rows="4" placeholder="Write your note here..."></textarea>
+
+                <div class="media-upload-container">
+                    <label for="mediaUpload" class="media-upload-label">
+                        <i class="fas fa-paperclip"></i> Attach Media
+                    </label>
+                    <input type="file" id="mediaUpload" accept="image/*,video/*">
+                    <img id="photoPreview" class="uploaded-media-preview" src="" alt="Photo Preview"
+                        style="display: none;">
+                    <video id="videoPreview" class="uploaded-media-preview" src="" controls
+                        style="display: none;"></video>
+                </div>
+
+                <div class="input-actions">
+                    <button class="btn" onclick="addNote()">Add Note</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="previous-notes" id="previousNotesList"></div>
+    </div>
+
+    <!-- Full Note Modal -->
+    <div id="noteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalNoteTitle"></div>
+                <div class="modal-close" onclick="closeNoteModal()">×</div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-date" id="modalNoteDate"></div>
+                <div id="modalNoteMedia"></div>
+                <div class="modal-content-full" id="modalNoteContent"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPreviousNotes();
+
+            // Media upload preview (previous code remains the same)
+            document.getElementById('mediaUpload').addEventListener('change', function (event) {
+                const file = event.target.files[0];
+                const photoPreview = document.getElementById('photoPreview');
+                const videoPreview = document.getElementById('videoPreview');
+
+                // Reset previous previews
+                photoPreview.style.display = 'none';
+                videoPreview.style.display = 'none';
+                photoPreview.src = '';
+                videoPreview.src = '';
+
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        // Check if it's an image or video
+                        if (file.type.startsWith('image/')) {
+                            photoPreview.src = e.target.result;
+                            photoPreview.style.display = 'block';
+                        } else if (file.type.startsWith('video/')) {
+                            videoPreview.src = e.target.result;
+                            videoPreview.style.display = 'block';
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Close modal when clicking outside of it
+            window.addEventListener('click', function (event) {
+                const modal = document.getElementById('noteModal');
+                if (event.target == modal) {
+                    closeNoteModal();
+                }
+            });
+        });
+
+        function addNote() {
+            const title = document.getElementById('noteTitle').value;
+            const content = document.getElementById('noteContent').value;
+            const mediaUpload = document.getElementById('mediaUpload');
+            const photoPreview = document.getElementById('photoPreview');
+            const videoPreview = document.getElementById('videoPreview');
+
+            if (title.trim() === '' || content.trim() === '') {
+                alert('Please fill in both title and content');
+                return;
+            }
+
+            // Determine the media type and source
+            let mediaType = null;
+            let mediaSource = null;
+
+            if (photoPreview.style.display === 'block') {
+                mediaType = 'image';
+                mediaSource = photoPreview.src;
+            } else if (videoPreview.style.display === 'block') {
+                mediaType = 'video';
+                mediaSource = videoPreview.src;
+            }
+
+            const note = {
+                id: Date.now(),
+                title: title,
+                content: content,
+                date: new Date().toLocaleDateString(),
+                mediaType: mediaType,
+                mediaSource: mediaSource
+            };
+
+            let notes = JSON.parse(localStorage.getItem('lotusNotes')) || [];
+            notes.push(note);
+            localStorage.setItem('lotusNotes', JSON.stringify(notes));
+
+            // Reset form
+            document.getElementById('noteTitle').value = '';
+            document.getElementById('noteContent').value = '';
+            mediaUpload.value = '';
+            photoPreview.src = '';
+            videoPreview.src = '';
+            photoPreview.style.display = 'none';
+            videoPreview.style.display = 'none';
+
+            loadPreviousNotes();
+        }
+
+        function loadPreviousNotes() {
+            const previousNotesList = document.getElementById('previousNotesList');
+            let notes = JSON.parse(localStorage.getItem('lotusNotes')) || [];
+
+            notes.sort((a, b) => b.id - a.id);
+
+            previousNotesList.innerHTML = '';
+            notes.forEach(note => {
+                const noteElement = document.createElement('div');
+                noteElement.classList.add('previous-note');
+
+                // Add media if exists
+                const mediaHTML = note.mediaType === 'image'
+                    ? `<img src="${note.mediaSource}" class="previous-note-media">`
+                    : (note.mediaType === 'video'
+                        ? `<video src="${note.mediaSource}" class="previous-note-media" controls></video>`
+                        : '');
+
+                noteElement.innerHTML = `
+                    ${mediaHTML}
+                    <div class="previous-note-title">${note.title}</div>
+                    <div class="previous-note-content">${note.content.length > 100 ? note.content.substring(0, 100) + '...' : note.content}</div>
+                    <div class="previous-note-date">${note.date}</div>
+                    <i class="fas fa-trash previous-note-delete" onclick="deleteNote(${note.id})"></i>
+                `;
+
+                // Add click event to show full note
+                noteElement.addEventListener('click', (event) => {
+                    // Prevent triggering when delete icon is clicked
+                    if (!event.target.classList.contains('previous-note-delete')) {
+                        showFullNote(note);
+                    }
+                });
+
+                previousNotesList.appendChild(noteElement);
+            });
+        }
+
+        function showFullNote(note) {
+            const modal = document.getElementById('noteModal');
+            const modalTitle = document.getElementById('modalNoteTitle');
+            const modalDate = document.getElementById('modalNoteDate');
+            const modalMedia = document.getElementById('modalNoteMedia');
+            const modalContent = document.getElementById('modalNoteContent');
+
+            // Set modal content
+            modalTitle.textContent = note.title;
+            modalDate.textContent = note.date;
+
+            // Handle media
+            if (note.mediaType === 'image') {
+                modalMedia.innerHTML = `<img src="${note.mediaSource}" class="modal-media">`;
+            } else if (note.mediaType === 'video') {
+                modalMedia.innerHTML = `<video src="${note.mediaSource}" class="modal-media" controls></video>`;
+            } else {
+                modalMedia.innerHTML = '';
+            }
+
+            // Set full content
+            modalContent.textContent = note.content;
+
+            // Show modal
+            modal.style.display = 'flex';
+        }
+
+        function closeNoteModal() {
+            const modal = document.getElementById('noteModal');
+            modal.style.display = 'none';
+        }
+
+        function deleteNote(id) {
+            let notes = JSON.parse(localStorage.getItem('lotusNotes')) || [];
+            notes = notes.filter(note => note.id !== id);
+            localStorage.setItem('lotusNotes', JSON.stringify(notes));
+            loadPreviousNotes();
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPreviousNotes();
+
+            // Media upload preview (previous code remains the same)
+            document.getElementById('mediaUpload').addEventListener('change', function (event) {
+                const file = event.target.files[0];
+                const photoPreview = document.getElementById('photoPreview');
+                const videoPreview = document.getElementById('videoPreview');
+
+                // Reset previous previews
+                photoPreview.style.display = 'none';
+                videoPreview.style.display = 'none';
+                photoPreview.src = '';
+                videoPreview.src = '';
+
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        // Check if it's an image or video
+                        if (file.type.startsWith('image/')) {
+                            photoPreview.src = e.target.result;
+                            photoPreview.style.display = 'block';
+                        } else if (file.type.startsWith('video/')) {
+                            videoPreview.src = e.target.result;
+                            videoPreview.style.display = 'block';
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Close modal when clicking outside of it
+            window.addEventListener('click', function (event) {
+                const modal = document.getElementById('noteModal');
+                if (event.target == modal) {
+                    closeNoteModal();
+                }
+            });
+
+            // Add keyboard support to close modal with Escape key
+            document.addEventListener('keydown', function (event) {
+                const modal = document.getElementById('noteModal');
+                if (event.key === 'Escape' && modal.style.display === 'flex') {
+                    closeNoteModal();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
